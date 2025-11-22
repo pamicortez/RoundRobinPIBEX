@@ -4,9 +4,9 @@ Desenvolvido por Profa. Dra. Pamela Michele Candida Cortez, UEFS-BA
 Contato: pamela@uefs.br
 
 Realiza a distribuição de bolsas com base nas regras dos editais PIBEX/UEFS de 2025, garantindo as bolsas reservadas para ações afirmativas, considerando o limite de bolsas por orientador e por projeto.
-rodada 1  = 1 por consepe
-rodada 2  = 1 por consepe se Programa
-rodada 3+ = ranking
+rodada 1 = 1 por consepe
+rodada 2 = 1 por consepe se Programa
+rodada 3 = ranking
 
 Desempate:
 a) Maior nota no Plano de Trabalho; coluna: Nota do Plano de Trabalho pós-recurso
@@ -54,12 +54,8 @@ cotas = {"outros": 0.1, "não negro" : 0.2, "negro" : 0.7, "ampla": 0.0} # porce
 def roundRobin(df, nscholarships, project, professor, students):
     min_mark = 128    
     approvals = 0
-    approved = True
     
-    for i in range(1,10):
-        if not approved:
-            break
-        approved = False
+    for i in range(1,4):
         for index, row in df.iterrows():
             #print(index, " ", row["Nota Final do pedido de bolsa"])
             edital     = row["Edital"]
@@ -90,12 +86,11 @@ def roundRobin(df, nscholarships, project, professor, students):
                     min_mark = row["Nota Final do pedido de bolsa"]
                 #print(project[consepe], " ", max(i - (0 if tipo == "Programa" else 1), 1))
 
-                approved = True
                 approvals += 1
                 if approvals == nscholarships:
                     return approvals, i, min_mark, df
     
-    return approvals, i-2, min_mark, df
+    return approvals, i, min_mark, df
 
 def rrUtil(df, nscholarships, project, professor, students, surplus = 0):
     approvals = [0] * len(cotas)
