@@ -8,6 +8,11 @@ rodada 1  = 1 por consepe
 rodada 2  = 1 por consepe se Programa
 rodada 3+ = ranking
 
+Desempate:
+a) Maior nota no Plano de Trabalho; coluna: Nota do Plano de Trabalho pós-recurso
+b) Maior nota de Currículo Docente; coluna: Currículo Docente pós-recurso
+c) Maior nota de Currículo Discente. coluna: Currículo Discente pós-recurso
+
 Instruções de Uso
 O usuário fornece: nome do arquivo CSV, número de bolsas para o edital específico (n1), número de bolsas para o edital geral (n2)
 O programa retorna: arquivo CSV “resultado.csv” com o status de cada plano na última coluna. Arquivos auxiliares “projetos.csv” e “professores.csv” com a quantidade de bolsas para cada projeto e orientador.
@@ -115,6 +120,7 @@ def rrUtil(df, nscholarships, project, professor, students, surplus = 0):
 
 def saveDict(data, filename):
     # print(data)
+    data = dict(sorted(data.items(), key=lambda item: item[1], reverse=True))
     df = pd.DataFrame(list(data.items()), columns=["nome", "quantidade"])
     df.to_csv(filename+".csv", sep=";", index=False)
     
@@ -126,8 +132,19 @@ def main(filename, n1, n2):
         escapechar="\\",
         engine="python"
     )
+    
     df["Nota Final do pedido de bolsa"] = df["Nota Final do pedido de bolsa"].str.replace(",", ".").astype(float)
-    df = df.sort_values(by="Nota Final do pedido de bolsa", ascending=False).reset_index(drop=True)
+    df["Nota do Plano de Trabalho pós-recurso"] = df["Nota do Plano de Trabalho pós-recurso"].str.replace(",", ".").astype(float)
+    df["Currículo Docente pós-recurso"] = df["Currículo Docente pós-recurso"].str.replace(",", ".").astype(float)
+    df["Currículo Discente pós-recurso"] = df["Currículo Discente pós-recurso"].str.replace(",", ".").astype(float)
+    df = df.sort_values(
+    by=[
+        "Nota Final do pedido de bolsa",
+        "Nota do Plano de Trabalho pós-recurso",
+        "Currículo Docente pós-recurso",
+        "Currículo Discente pós-recurso",
+    ], ascending=[False, False, False, False]).reset_index(drop=True)
+
     df["Resultado"] = "Cadastro Reserva"
 
     mask_notapproved = (df["Nota Final do pedido de bolsa"] < 7) | (df["Eliminado do processo?"].fillna("").str.strip() != "")
