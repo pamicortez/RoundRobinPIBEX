@@ -77,13 +77,13 @@ No duplicate students<br>
 <br>
 After the selection, non-selected candidates default to: Cadastro Reserva, Aprovado or Não Aprovado<br>
 <br>
-<br>
 Constants block (edit as needed)<br>
 N_PROFESSOR = 6 # limite de bolsas por professor<br>
 N_PROGRAM = 6   # limite de bolsas por programa<br>
 N_PROJECT = 4   # limite de bolsas por projeto<br>
 N_SPECIFIC_PROJECTS = 5 # número de projetos no edital específico - considera-se que todos recebem a mesma qtde de bolsas<br>
 cotas = {"outros": 0.1, "não negro" : 0.2, "negro" : 0.7, "ampla": 0.0} # porcentagens. Não usar "-" entre as palavras na coluna Ação Afirmativa no csv de entrada<br>
+<br>
 python -m venv myenv<br>
 source myenv/bin/activate<br>
 pip install pandas<br>
