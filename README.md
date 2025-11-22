@@ -2,7 +2,7 @@
 Sistema de Distribuição de Bolsas: realiza a distribuição de bolsas com base nas regras dos editais PIBEX/UEFS de 2025, garantindo as bolsas reservadas para ações afirmativas, considerando o limite de bolsas por orientador e por projeto.<br>
 <br>
 Input Format<br>
-O programa deve receber o nome de um arquivo CSV com pelo menos as seguintes colunas (nome das colunas não podem ser alteradas):
+O programa deve receber o nome de um arquivo CSV (incluindo o caminho completo do diretório caso não esteja na mesma pasta) com pelo menos as seguintes colunas (os nome das colunas não podem ser alterados):
 <br>
 <table>
     <thead>
@@ -84,8 +84,9 @@ N_PROJECT = 4   # limite de bolsas por projeto<br>
 N_SPECIFIC_PROJECTS = 5 # número de projetos no edital específico - considera-se que todos recebem a mesma qtde de bolsas<br>
 cotas = {"outros": 0.1, "não negro" : 0.2, "negro" : 0.7, "ampla": 0.0} # porcentagens. Não usar "-" entre as palavras na coluna Ação Afirmativa no csv de entrada<br>
 <br>
+To run:<br>
 python -m venv myenv<br>
 source myenv/bin/activate<br>
 pip install pandas<br>
 python3 roundrobin.py <filename>.csv n1 n2<br>
-exemplo: python3 roundrobin.py entrada.csv 50 320<br>
+example: python3 roundrobin.py entrada.csv 50 320<br>
