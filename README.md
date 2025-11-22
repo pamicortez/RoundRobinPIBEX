@@ -1,7 +1,7 @@
 # RoundRobinPIBEX
 Sistema de Distribuição de Bolsas: realiza a distribuição de bolsas com base nas regras dos editais PIBEX/UEFS de 2025, garantindo as bolsas reservadas para ações afirmativas, considerando o limite de bolsas por orientador e por projeto.<br>
 <br>
-Input Format<br>
+<h2>Input Format</h2>
 O programa deve receber o nome de um arquivo CSV (incluindo o caminho completo do diretório caso não esteja na mesma pasta) com pelo menos as seguintes colunas (os nome das colunas não podem ser alterados):
 <br>
 <table>
@@ -47,12 +47,13 @@ O programa deve receber o nome de um arquivo CSV (incluindo o caminho completo d
     </tbody>
 </table>
 <br>
-CSV deve conter os dois editais. O edital de chamadas específico deve conter a substring "espec"<br>
+O arquivo CSV deve conter os dois editais. O edital de chamadas específico deve conter a substring "espec"<br>
 Exemplo:<br>
 Edital PIBEX 02/2025 - Programas Específicos<br>
 Edital PIBEX 01/2025 - Geral<br>
 <br>
-How the Algorithm Works<br>
+O programa tmbém deve receber como parâmetro da chamada: o número de bolsas para o edital específico (n1) e o número de bolsas para o edital geral (n2)<br>
+<h2>How the Algorithm Works</h2>
 The selection occurs in rounds:<br>
 <br>
 1st Round<br>
@@ -77,16 +78,17 @@ No duplicate students<br>
 <br>
 After the selection, non-selected candidates default to: Cadastro Reserva, Aprovado or Não Aprovado<br>
 <br>
-Constants block (edit as needed)<br>
+<h2>To run:</h2>
+Constants block (edit as needed):<br>
 N_PROFESSOR = 6 # limite de bolsas por professor<br>
 N_PROGRAM = 6   # limite de bolsas por programa<br>
 N_PROJECT = 4   # limite de bolsas por projeto<br>
 N_SPECIFIC_PROJECTS = 5 # número de projetos no edital específico - considera-se que todos recebem a mesma qtde de bolsas<br>
 cotas = {"outros": 0.1, "não negro" : 0.2, "negro" : 0.7, "ampla": 0.0} # porcentagens. Não usar "-" entre as palavras na coluna Ação Afirmativa no csv de entrada<br>
 <br>
-To run:<br>
 python -m venv myenv<br>
 source myenv/bin/activate<br>
 pip install pandas<br>
-python3 roundrobin.py <filename>.csv n1 n2<br>
+python3 roundrobin.py &lt;filename&gt;.csv n1 n2<br>
+where: n1 is the number of scholarships in the Specific Call and n2 is the number of scholarships in the General Call. They must be integers
 example: python3 roundrobin.py entrada.csv 50 320<br>
