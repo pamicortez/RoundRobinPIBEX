@@ -18,6 +18,7 @@ O usuário fornece: nome do arquivo CSV, número de bolsas para o edital especí
 O programa retorna: arquivo CSV “resultado.csv” com o status de cada plano na última coluna. Arquivos auxiliares “projetos.csv” e “professores.csv” com a quantidade de bolsas para cada projeto e orientador.
 
 Para executar no VS Code:
+cd <nome do diretório onde está o programa e o arquivo de entrada>
 python -m venv myenv
 source myenv/bin/activate
 pip install pandas
@@ -53,9 +54,12 @@ cotas = {"outros": 0.1, "não negro" : 0.2, "negro" : 0.7, "ampla": 0.0} # porce
 
 def roundRobin(df, nscholarships, project, professor, students):
     min_mark = 128    
-    approvals = 0
+    i = approvals = 0
+    approved = True
     
-    for i in range(1,4):
+    while approved:
+        approved = False
+        i += 1
         for index, row in df.iterrows():
             #print(index, " ", row["Nota Final do pedido de bolsa"])
             edital     = row["Edital"]
@@ -77,7 +81,7 @@ def roundRobin(df, nscholarships, project, professor, students):
                 ( ("espec" in edital.lower() and project[consepe] < n1//N_SPECIFIC_PROJECTS) or ( ((tipo == "Programa" and project[consepe] < N_PROGRAM) or project[consepe] < N_PROJECT) and\
                 (i > 2 or project[consepe] < max(i - (0 if tipo == "Programa" else 1), 1)) ) ):
 
-                df.loc[index, "Resultado"] = f"Convocado na rodada {i}"
+                df.loc[index, "Resultado"] = "Convocado"
                 project[consepe] += 1
                 professor[orientador] += 1
 
@@ -86,11 +90,12 @@ def roundRobin(df, nscholarships, project, professor, students):
                     min_mark = row["Nota Final do pedido de bolsa"]
                 #print(project[consepe], " ", max(i - (0 if tipo == "Programa" else 1), 1))
 
+                approved = True
                 approvals += 1
                 if approvals == nscholarships:
-                    return approvals, i, min_mark, df
+                    return approvals, min_mark, df
     
-    return approvals, i, min_mark, df
+    return approvals, min_mark, df
 
 def rrUtil(df, nscholarships, project, professor, students, surplus = 0):
     approvals = [0] * len(cotas)
@@ -104,9 +109,9 @@ def rrUtil(df, nscholarships, project, professor, students, surplus = 0):
         n = int(math.ceil(nscholarships/2*value)) if key != "ampla" else nscholarships + surplus - sum(approvals)
         mask = df["Ação Afirmativa"].str.contains(key if i else search_pattern, case=False, na=False, regex=True)
         df_i = df[mask if i else ~mask] if key != "ampla" else df
-        approvals[i], round, min_mark, dftemp[i] = roundRobin(df_i, n, project, professor, students)
+        approvals[i], min_mark, dftemp[i] = roundRobin(df_i, n, project, professor, students)
         
-        print(f"Ações afirmativas {key:^9}: {round} rodadas, nota de corte = {dftemp[i]["Nota Final do pedido de bolsa"].min() if min_mark > 100 else min_mark:.2f}, bolsas = {n:3d}, "
+        print(f"Ações afirmativas {key:^9}: nota de corte = {dftemp[i]["Nota Final do pedido de bolsa"].min() if min_mark > 100 else min_mark:.2f}, bolsas = {n:3d}, "
               f"aprovados = {approvals[i]:3d}/{df_i.shape[0]:3d}, total = {len(students):3d}")# ({sum(professor.values()):3d}, {sum(project.values()):3d})")
         i += 1
 
